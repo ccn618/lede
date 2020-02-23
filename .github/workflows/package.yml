@@ -13,9 +13,9 @@ on:
 #  schedule:
 #    - cron: 0 0 * * *
 
-#  push:
-#    branches:
-#      - master
+  push:
+    branches:
+      - master
 
 jobs:
 
@@ -54,9 +54,9 @@ jobs:
         run: |
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-      - name: Generate configuration file
-        run: |
-          cp ./uploadconfig/Clark.config ./.config
+#      - name: Generate configuration file
+#        run: |
+#          cp ./uploadconfig/Clark.config ./.config
 #          make defconfig
       - name: Make download
         run: |
@@ -64,7 +64,9 @@ jobs:
           find ./dl/ -size -1024c -exec rm -f {} \;
       - name: Compile firmware
         run: |
-          make -j$(nproc) || make -j1 V=s
+#          make -j$(nproc) || make -j1 V=s
+          make package/lean/automount/compile -j$(nproc) || make package/lean/automount/compile -j1 V=s
+
           echo "======================="
           echo "Space usage:"
           echo "======================="
@@ -79,5 +81,5 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: OpenWrt firmware
-         path: ./bin/targets/
-#         path: ./bin/
+#         path: ./bin/targets/
+         path: ./bin/
